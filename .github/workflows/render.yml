@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
   release:
     types: [published]
+concurrency:
+  group: sekigahara-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
