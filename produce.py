@@ -2,6 +2,8 @@
 import math, random, wave, struct, subprocess, argparse
 from pathlib import Path
 p=argparse.ArgumentParser(); p.add_argument('--out',default='build'); a=p.parse_args(); out=Path(a.out).resolve(); out.mkdir(parents=True,exist_ok=True)
+missing=[out/'frames'/f'frame_{i:04d}.png' for i in range(1,2101) if not (out/'frames'/f'frame_{i:04d}.png').is_file()]
+if missing: raise FileNotFoundError(f'Missing {len(missing)} frames; render first. First missing: {missing[0]}')
 rate=24000; rng=random.Random(1600)
 with wave.open(str(out/'soundtrack.wav'),'wb') as w:
  w.setparams((1,2,rate,0,'NONE','not compressed'))
@@ -12,7 +14,7 @@ with wave.open(str(out/'soundtrack.wav'),'wb') as w:
    chord=[110,130.8128,146.8324,164.8138][int(t/8)%4]
    music=.08*math.sin(2*math.pi*chord*t)+.04*math.sin(2*math.pi*chord*1.5*t)
    noise=rng.uniform(-1,1); march=noise*.12*math.exp(-(t%.5)*35) if 15<=t<35 else 0
-   clash=noise*.3*math.exp(-(t%.7)*14) if 35<=t<55 else 0
+   clash=noise*.3*math.exp(-(t%.7)*14) if 35<=t<55 or t<3 else 0
    turn=.16*math.sin(2*math.pi*(220+40*(t-55))*t)*math.exp(-(t-55)) if 55<=t<60 else 0
    retreat=noise*.1*math.exp(-(t%.28)*30) if 60<=t<67 else 0
    fade=min(1,t/0.3,(70-t)/3); v=(music+drum+march+clash+turn+retreat)*max(0,fade)
@@ -39,5 +41,5 @@ text+='Dialogue: 1,0:00:03.00,0:00:15.00,EN,,0,0,145,,史実を簡略化した�
 text+='Dialogue: 1,0:01:07.00,0:01:10.00,EN,,0,0,145,,史実を簡略化した再現 / Simplified reconstruction\n'
 (out/'captions.ass').write_text(text,encoding='utf-8')
 # cwd avoids filter escaping problems with absolute paths.
-subprocess.run(['ffmpeg','-y','-framerate','30','-start_number','1','-i','frames/frame_%04d.png','-i','soundtrack.wav','-vf','ass=captions.ass','-frames:v','2100','-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-t','70','-movflags','+faststart','sekigahara.mp4'],cwd=out,check=True)
+subprocess.run(['ffmpeg','-y','-framerate','30','-start_number','1051','-t','3','-i','frames/frame_%04d.png','-framerate','30','-start_number','91','-t','67','-i','frames/frame_%04d.png','-i','soundtrack.wav','-filter_complex','[0:v]setpts=PTS-STARTPTS[h];[1:v]setpts=PTS-STARTPTS[m];[h][m]concat=n=2:v=1:a=0,ass=captions.ass[v]','-map','[v]','-map','2:a:0','-frames:v','2100','-c:v','libx264','-crf','20','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-t','70','-movflags','+faststart','sekigahara.mp4'],cwd=out,check=True)
 subprocess.run(['ffprobe','-v','error','-show_entries','format=duration:stream=codec_name,width,height,r_frame_rate','-of','json','sekigahara.mp4'],cwd=out,check=True)
