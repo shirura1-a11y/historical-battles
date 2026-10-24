@@ -86,3 +86,16 @@ Settings → Actionsを確認するかローカル実行してください。
 外部の音源素材を使わずPythonでオリジナルBGMと効果音を生成します。
 商用利用可能なCC0として公開する条件・出所・ツールの条件は
 [AUDIO_LICENSE.md](AUDIO_LICENSE.md) を参照してください。
+
+## 完成動画の生成結果
+
+[成功したActions実行](https://github.com/shirura1-a11y/historical-battles/actions/runs/40141484614)
+で全2100フレームをレンダリングし、字幕・音響を統合しました。
+FFprobe検証: 720×1280、30fps、H.264映像＋AAC音声、70.000秒。
+
+[完成動画のArtifacts ZIPを取得](https://github.com/shirura1-a11y/historical-battles/actions/runs/40141484614/artifacts/12579570088)
+（GitHubログインが必要、保存期間30日）。ZIP内の `build/sekigahara.mp4` を再生してください。
+音源条件は同梱の `AUDIO_LICENSE.md`、字幕は `build/captions.ass` にあります。
+
+初回のEGL不足によるActionsエラーはMesa・EGL・Xvfb導入で修正済みです。
+今後の同一ブランチ更新では古いレンダリングを自動キャンセルします。
