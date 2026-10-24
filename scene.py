@@ -48,7 +48,7 @@ for idx,(name,x,y,m) in enumerate(units):
   key(root,55,(x,y,z)); key(root,61,(-4,-5,1)); key(root,66,(-2,-4,.4)); key(root,70,(-1,-3,.4))
  else:
   cx=x*.22; cy=y*.65
-  key(root,35,(cx,cy,height(cx,cy)+.15)); key(root,55,(cx+.25,cy,.3))
+  key(root,35,(cx,cy,height(cx,cy)+.15)); key(root,55,(cx+.25,cy,height(cx+.25,cy)+.15))
   key(root,66,((-12 if idx<4 else -2),cy+2,.35)); key(root,70,((-15 if idx<4 else -3),cy+3,.35))
 for i in range(24):
  x=rng.uniform(-2,2); y=rng.uniform(-4,5)
@@ -58,7 +58,7 @@ for i in range(24):
   o.scale=(size,size,size*1.5); o.keyframe_insert('scale',frame=1+t*30)
   key(o,t,(x+.3*math.sin(t+i),y,.8+((t+i)%4)*.4))
 bpy.ops.object.camera_add(); cam=bpy.context.object; s.camera=cam; cam.data.type='ORTHO'
-for t,pos,target,zoom in [(0,(11,-14,15),(0,0,0),28),(3,(18,-24,27),(0,0,0),37),(15,(17,-23,28),(0,0,0),37),(35,(12,-17,21),(0,0,0),25),(55,(8,-17,22),(-2,-3,0),27),(63,(7,-18,24),(-5,-3,0),31),(70,(15,-24,30),(-2,0,0),37)]:
+for t,pos,target,zoom in [(0,(0,-18,24),(0,0,0),40),(3,(1,-24,30),(0,0,0),44),(15,(2,-23,30),(0,0,0),44),(35,(12,-17,21),(0,0,0),25),(55,(8,-17,22),(-2,-3,0),27),(63,(7,-18,24),(-5,-3,0),31),(70,(15,-24,30),(-2,0,0),37)]:
  key(cam,t,pos); cam.rotation_euler=(Vector(target)-cam.location).to_track_quat('-Z','Y').to_euler(); cam.keyframe_insert('rotation_euler',frame=1+round(t*30)); cam.data.ortho_scale=zoom; cam.data.keyframe_insert('ortho_scale',frame=1+round(t*30))
 # Camera interpolation is smooth; troop motion stays legible and has no overshoot.
 for obj in bpy.data.objects:
