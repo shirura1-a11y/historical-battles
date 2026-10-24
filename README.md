@@ -43,9 +43,8 @@ ffprobe -v error -show_streams -show_format build/sekigahara.mp4
 2. 完了した実行の **Artifacts → sekigahara-720x1280-30fps** をダウンロード。
 3. ZIP内の `build/sekigahara.mp4` が完成動画です。Artifactsは30日保存します。
 
-生成成功後は `video-コミットSHA先頭12桁` のReleaseを自動作成し、MP4を添付します。
-既存の公開Releaseを作成した場合も同ワークフローでMP4を添付します。
-Releasesへの書き込みが制限されている場合も、成功済みのArtifactsから取得できます。Actions無効・利用枠超過時は
+公開Releaseを作成すると同ワークフローが動画を生成し、Release AssetsへMP4を添付します。
+Release作成はリポジトリ管理者が行ってください。Actions無効・利用枠超過時は
 Settings → Actionsを確認するかローカル実行してください。
 レンダリングにはCPU性能に応じて時間と中間画像用ディスクが必要です。
 エラー時は失敗ステップのログを開き、修正後 **Re-run failed jobs**。
